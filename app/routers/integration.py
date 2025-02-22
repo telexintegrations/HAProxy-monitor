@@ -1,4 +1,4 @@
-from fastapi import APIRouter, BackgroundTasks, Request, status
+from fastapi import APIRouter, BackgroundTasks, Request, status, HTTPException
 
 from app.utils.monitor import HAProxyMonitor
 from app.schema.monitor import MonitorPayload
@@ -51,7 +51,7 @@ async def get_integration_json(request: Request):
                     "label": "stats_endpoint",
                     "type": "text",
                     "required": True,
-                    "default": "http://haproxy-server:8404/stats;csv",
+                    "default": "http://ec2-13-60-212-132.eu-north-1.compute.amazonaws.com:9000/haproxy_stats;csv;",
                     "description": "HAProxy stats URL (e.g., http://haproxy:8404/stats;csv)",
                 },
                 {
@@ -77,12 +77,25 @@ async def get_integration_json(request: Request):
 
 @router.post("/tick", status_code=status.HTTP_202_ACCEPTED)
 async def monitor_haproxy(payload: MonitorPayload, background_tasks: BackgroundTasks):
-    # Get all required settings
+    # Initialize variables
+    stats_endpoint = None
+    username = None
+    password = None
+
+    # Extract settings based on labels
     for setting in payload.settings:
-        if setting.stats_endpoint:
-            stats_endpoint = setting.stats_endpoint
-            username = setting.username
-            password = setting.password
+        if setting.label == "stats_endpoint":
+            stats_endpoint = setting.default
+        elif setting.label == "username":
+            username = setting.default
+        elif setting.label == "password":
+            password = setting.default
+
+    if not all([stats_endpoint, username, password]):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Missing required settings: stats_endpoint, username, or password",
+        )
 
     print("stats_endpoint", stats_endpoint)
 
