@@ -45,19 +45,28 @@ async def get_integration_json(request: Request):
                     "label": "interval",
                     "type": "text",
                     "required": True,
-                    "default": "* * * * *",  # "00:00",
+                    "default": "* * * * *",
                 },
                 {
-                    "label": "Telex Webhook URL",
+                    "label": "stats_endpoint",
                     "type": "text",
                     "required": True,
-                    "default": "https://telex.example.com/webhook",
+                    "default": "http://haproxy-server:8404/stats;csv",
+                    "description": "HAProxy stats URL (e.g., http://haproxy:8404/stats;csv)",
                 },
                 {
-                    "label": "HAProxy Admin Socket Path",
+                    "label": "username",
                     "type": "text",
-                    "required": False,
-                    "default": "/var/run/haproxy/admin.sock",
+                    "required": True,
+                    "default": "",
+                    "description": "Username for HAProxy stats authentication",
+                },
+                {
+                    "label": "password",
+                    "type": "password",
+                    "required": True,
+                    "default": "",
+                    "description": "Password for HAProxy stats authentication",
                 },
             ],
             "tick_url": "http://13.48.84.147:8000/tick",
@@ -68,6 +77,20 @@ async def get_integration_json(request: Request):
 
 @router.post("/tick", status_code=status.HTTP_202_ACCEPTED)
 async def monitor_haproxy(payload: MonitorPayload, background_tasks: BackgroundTasks):
-    monitor = HAProxyMonitor(payload.return_url)
+    # Get all required settings
+    for setting in payload.settings:
+        if setting.stats_endpoint:
+            stats_endpoint = setting.stats_endpoint
+            username = setting.username
+            password = setting.password
+
+    print("stats_endpoint", stats_endpoint)
+
+    monitor = HAProxyMonitor(
+        telex_webhook_url=payload.return_url,
+        stats_endpoint=stats_endpoint,
+        username=username,
+        password=password,
+    )
     background_tasks.add_task(monitor.run_check)
     return {"status": "accepted"}

@@ -7,6 +7,9 @@ class Setting(BaseModel):
     type: str
     required: bool
     default: str
+    stats_endpoint: str | None = None
+    username: str | None = None
+    password: str | None = None
 
 
 class MonitorPayload(BaseModel):

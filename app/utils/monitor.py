@@ -6,22 +6,25 @@ import io
 
 
 class HAProxyMonitor:
-    def __init__(self, telex_webhook_url):
+    def __init__(self, telex_webhook_url, stats_endpoint, username=None, password=None):
         self.telex_webhook_url = telex_webhook_url
+        self.stats_endpoint = stats_endpoint
+        self.username = username
+        self.password = password
 
     def get_haproxy_stats(self):
         """Collect HAProxy statistics"""
         try:
-            # Get stats from HAProxy admin socket
-            result = subprocess.run(
-                ["sudo", "nc", "-U", "/var/run/haproxy/admin.sock"],
-                input="show stat\n",
-                capture_output=True,
-                text=True,
-                timeout=20,
-            )
+            auth = None
+            if self.username and self.password:
+                auth = (self.username, self.password)
 
-            return result.stdout
+            response = requests.get(
+                self.stats_endpoint,
+                auth=auth,
+                verify=False,  # Only if needed for self-signed certs
+            )
+            return response.text
         except Exception as e:
             return f"Error collecting stats: {str(e)}"
 
@@ -122,6 +125,7 @@ class HAProxyMonitor:
     def run_check(self):
         """Execute daily monitoring check"""
         stats_output = self.get_haproxy_stats()
+        print("stats_output", stats_output)
         metrics = self.parse_stats(stats_output)
         report = self.format_daily_report(metrics)
         return self.send_to_telex(report)
@@ -129,7 +133,8 @@ class HAProxyMonitor:
 
 def main():
     monitor = HAProxyMonitor(
-        telex_webhook_url="https://ping.telex.im/v1/webhooks/01951385-f313-7195-83f1-0ebf19ff972a"
+        telex_webhook_url="https://ping.telex.im/v1/webhooks/01951385-f313-7195-83f1-0ebf19ff972a",
+        stats_endpoint="http://localhost/haproxy-status",
     )
     monitor.run_check()
 
