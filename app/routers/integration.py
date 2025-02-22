@@ -63,7 +63,7 @@ async def get_integration_json(request: Request):
                 },
                 {
                     "label": "password",
-                    "type": "password",
+                    "type": "text",
                     "required": True,
                     "default": "",
                     "description": "Password for HAProxy stats authentication",
