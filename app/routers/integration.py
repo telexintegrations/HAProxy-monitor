@@ -15,7 +15,6 @@ async def get_integration_json(request: Request):
             "descriptions": {
                 "app_name": "HAProxy Stats Monitor",
                 "app_description": "Monitors HAProxy statistics and sends daily reports to Telex.",
-                "app_logo": "URL to the application logo.",
                 "app_url": base_url,
                 "background_color": "#4A90E2",
             },
