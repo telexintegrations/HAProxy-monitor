@@ -15,7 +15,7 @@ async def get_integration_json(request: Request):
             "descriptions": {
                 "app_name": "HAProxy Stats Monitor",
                 "app_description": "Monitors HAProxy statistics and sends daily reports to Telex.",
-                "app_logo": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.m.wikipedia.org%2Fwiki%2FFile%3AHaproxy-logo.png&psig=AOvVaw3VtXG48vq-Qp_uoGvf4t8f&ust=1740314516621000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCMCC7PWm14sDFQAAAAAdAAAAABAE",
+                "app_logo": "https://upload.wikimedia.org/wikipedia/commons/a/ab/Haproxy-logo.png",
                 "app_url": base_url,
                 "background_color": "#4A90E2",
             },
@@ -60,7 +60,7 @@ async def get_integration_json(request: Request):
                     "default": "/var/run/haproxy/admin.sock",
                 },
             ],
-            "tick_url": "http://http://13.48.84.147:8000/tick",
+            "tick_url": "http://13.48.84.147:8000/tick",
             "target_url": "none",
         }
     }
