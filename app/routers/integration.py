@@ -61,6 +61,7 @@ async def get_integration_json(request: Request):
                 },
             ],
             "tick_url": "http://example.com/tick_url",
+            "target_url": "none",
         }
     }
 
