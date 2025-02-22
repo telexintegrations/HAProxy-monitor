@@ -60,7 +60,7 @@ async def get_integration_json(request: Request):
                     "default": "/var/run/haproxy/admin.sock",
                 },
             ],
-            "tick_url": "http://example.com/tick_url",
+            "tick_url": "http://http://13.48.84.147:8000/tick",
             "target_url": "none",
         }
     }
