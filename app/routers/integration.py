@@ -3,7 +3,7 @@ from fastapi import APIRouter, BackgroundTasks, Request, status, HTTPException
 from app.utils.monitor import HAProxyMonitor
 from app.schema.monitor import MonitorPayload
 
-router = APIRouter(prefix="", tags=["Hello World"])
+router = APIRouter(prefix="", tags=["HAProxy Health and Performance Monitor"])
 
 
 @router.get("/integration.json")
@@ -13,7 +13,7 @@ async def get_integration_json(request: Request):
         "data": {
             "date": {"created_at": "2025-02-20", "updated_at": "2025-02-20"},
             "descriptions": {
-                "app_name": "HAProxy Stats Monitor",
+                "app_name": "HAProxy Health and Performance Monitor",
                 "app_description": "Monitors HAProxy statistics and sends daily reports to Telex.",
                 "app_logo": "https://upload.wikimedia.org/wikipedia/commons/a/ab/Haproxy-logo.png",
                 "app_url": base_url,
