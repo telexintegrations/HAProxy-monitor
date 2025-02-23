@@ -108,6 +108,69 @@ The monitor generates detailed reports including:
 - Response times
 - Error statistics
 
+## Example Report
+
+![HAProxy Monitor Report](static/screenshot.png)
+
+This is an example of a health report sent to your Telex channel showing:
+
+- Backend servers' status with UP/DOWN indicators
+- Session statistics for each backend
+- Error counts and breakdowns
+- Response time metrics in milliseconds
+
+## Setting up with Telex
+
+### Prerequisites Setup
+
+1. HAProxy Load Balancer Setup:
+
+   - Install and configure HAProxy on your server
+   - Configure HAProxy as a load balancer for your backend services
+   - Ensure your HAProxy configuration is properly routing traffic
+
+2. Enable HAProxy Statistics:
+   - Add the following to your HAProxy configuration file (/etc/haproxy/haproxy.cfg):
+   ```conf
+   listen stats
+    bind *:9000
+    stats refresh 60s
+    stats uri /haproxy_stats
+    stats auth admin:admin # Replace with secure credentials
+   ```
+   - Restart HAProxy to apply changes:
+   ```bash
+   sudo systemctl restart haproxy
+   ```
+
+### Telex Integration Setup
+
+1. Access your Telex organization dashboard
+2. Navigate to the channel where you want to receive HAProxy monitoring alerts
+3. Click on "Add Integration" and search for "HAProxy Monitor"
+4. Configure the required settings:
+   - **Interval**: How often to check HAProxy stats (e.g., "_/5 _ \* \* \*" for every 5 minutes)
+   - **Stats Endpoint**: Your HAProxy stats URL (e.g., "http://your-haproxy:9000/haproxy_stats;csv")
+   - **Username**: Stats page username (as configured in haproxy.cfg)
+   - **Password**: Stats page password (as configured in haproxy.cfg)
+5. Click "Save" to activate the integration
+
+### Verification
+
+1. The integration will start sending reports based on your configured interval
+2. You should receive a health report in your Telex channel containing:
+   - Backend server status
+   - Session statistics
+   - Error counts
+   - Response time metrics
+
+### Troubleshooting
+
+- Ensure your HAProxy stats endpoint is accessible from the internet
+- Verify the authentication credentials match your HAProxy configuration
+- Check that your firewall allows access to the stats endpoint port
+- Monitor the HAProxy logs for any authentication failures
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
