@@ -30,7 +30,7 @@ async def get_integration_json(request: Request):
             ],
             "key_features": [
                 "Monitors HAProxy performance metrics.",
-                "Sends regular stats updates to Telex.",
+                "Sends regular stats updates to Telex at intervals.",
                 "Configurable update interval.",
                 "Supports customizable settings.",
             ],
